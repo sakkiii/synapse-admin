@@ -1,9 +1,9 @@
 name: Create release tarball and attach to tag
 
 on:
-  push:
-    tags:
-      - "*"
+  push #:
+#    tags:
+#      - "*"
 
 jobs:
   build:
@@ -24,8 +24,20 @@ jobs:
           mkdir -p dist
           cp -r build synapse-admin-$version
           tar chvzf dist/synapse-admin-$version.tar.gz synapse-admin-$version
-      - uses: softprops/action-gh-release@b7e450da2a4b4cb4bfbae528f788167786cfcedf
+#       - uses: softprops/action-gh-release@b7e450da2a4b4cb4bfbae528f788167786cfcedf
+#         with:
+#           files: dist/*.tar.gz
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
         with:
           files: dist/*.tar.gz
+          #body_path: ${{ github.workspace }}-CHANGELOG.txt
+          # note you'll typically need to create a personal access token
+          # with permissions to create releases in the other repo
+          #token: ${{ secrets.GITHUB_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
